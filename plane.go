@@ -28,3 +28,23 @@ func (p *Plane3) Set(normal *vector.Vector3, constant float64) {
 func (p *Plane3) DistanceToPoint(point *vector.Vector3) float64 {
 	return p.normal.Dot(point) + p.constant
 }
+
+// SetComponents sets the Planes components
+func (p *Plane3) SetComponents(x, y, z, w float64) {
+	p.normal = vector.NewVector3(x, y, z)
+	p.constant = w
+}
+
+// SetFromNormalAndCoplanarPoint sets the Plane from normal vector and onepoint containted by the plane
+func (p *Plane3) SetFromNormalAndCoplanarPoint(normal *vector.Vector3, point *vector.Vector3) {
+	p.normal = normal
+	p.constant = -point.Dot(p.normal)
+}
+
+// SetFromCoplanarPoints sets the Plane from three Coplanar Points
+func (p *Plane3) SetFromCoplanarPoints(a, b, c *vector.Vector3) {
+	v1 := c.Sub(b)
+	v2 := a.Sub(b)
+	normal := v1.NewCross(v2).Normalize()
+	p.SetFromNormalAndCoplanarPoint(normal, a)
+}
